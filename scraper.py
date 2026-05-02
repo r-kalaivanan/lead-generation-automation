@@ -15,25 +15,52 @@ def fetch_companies():
     )
     driver.get("https://www.ycombinator.com/companies")
 
-    companies = []
-
     wait = WebDriverWait(driver, 10)
 
     cards = wait.until(
         EC.presence_of_all_elements_located((By.CSS_SELECTOR, "a[href^='/companies/']"))
     )
 
+    companies = []
+
     for card in cards[:30]:
         try:
-            name = card.text.split("\n")[0]
-            link = "https://www.ycombinator.com" + card.get_attribute("href")  
+            text = card.text.strip()
+            lines = text.split("\n")
+
+            # Extract name + location from first line
+            first_line = lines[0]
+
+            # Split based on common pattern (location contains comma)
+            if "," in first_line:
+                # Find first uppercase letter after name ends
+                import re
+                match = re.match(r"([A-Za-z0-9\s&.-]+)([A-Z].*)", first_line)
+                
+                if match:
+                    name = match.group(1).strip()
+                    location = match.group(2).strip()
+                else:
+                    name = first_line
+                    location = "N/A"
+            else:
+                name = first_line
+                location = "N/A"
+
+            # Description (optional)
+            description = lines[1] if len(lines) > 1 else "N/A"
+
+            link = card.get_attribute("href")
 
             companies.append({
                 "Name": name,
-                "Website" : link,
-                "Location": "N/A",
+                "Website": link,
+                "Location": location,
+                "Description": description
             })
-        except:
+
+        except Exception as e:
+            print("Error:", e)
             continue
     
     driver.quit()
