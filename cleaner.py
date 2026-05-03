@@ -1,5 +1,11 @@
 import pandas as pd
 
+def generate_email(name):
+    if name and name != "N/A":
+        domain = name.lower().replace(" ", "") + ".com"
+        return f"contact@{domain}"
+    return "N/A"
+
 def clean_data(data):
     # Convert to DataFrame
     df = pd.DataFrame(data)
@@ -18,5 +24,6 @@ def clean_data(data):
     df["Name"] = df["Name"].str.title()
     df = df[df["Name"] != "N/A"]
     df = df.reset_index(drop=True)
-
+    
+    df["Email"] = df["Name"].apply(generate_email)
     return df
