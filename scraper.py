@@ -28,12 +28,9 @@ def fetch_companies():
             text = card.text.strip()
             lines = text.split("\n")
 
-            # Extract name + location from first line
             first_line = lines[0]
 
-            # Split based on common pattern (location contains comma)
             if "," in first_line:
-                # Find first uppercase letter after name ends
                 import re
                 match = re.match(r"([A-Za-z0-9\s&.-]+)([A-Z].*)", first_line)
                 
@@ -47,7 +44,6 @@ def fetch_companies():
                 name = first_line
                 location = "N/A"
 
-            # Description (optional)
             description = lines[1] if len(lines) > 1 else "N/A"
 
             link = card.get_attribute("href")
