@@ -7,7 +7,7 @@ from selenium.webdriver.support import expected_conditions as EC
 
 def fetch_companies():
     options = webdriver.ChromeOptions()
-    options.add_argument("--headless")  # runs without opening browser
+    options.add_argument("--headless")  
 
     driver = webdriver.Chrome(
         service=Service(ChromeDriverManager().install()),
